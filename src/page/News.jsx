@@ -1,11 +1,41 @@
-import React from 'react'
+import React from "react";
+import Wrapper from "../components/Wrapper";
 
 const News = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+    <NewsCard />
+    <NewsCard />
+    <NewsCard />
+    <NewsCard />
+    <NewsCard />
+    <NewsCard />
+    <NewsCard />
+  </div>;
+};
 
-export default News
+const NewsCard = () => {
+  return (
+    <Wrapper>
+      <div className="card bg-base-200 w-96 shadow-sm">
+        <figure>
+          <img
+            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+            alt="Shoes"
+          />
+        </figure>
+        <div className="card-body">
+          <h2 className="card-title">Card Title</h2>
+          <p>
+            A card component has a figure, a body part, and inside body there
+            are title and actions parts
+          </p>
+          <div className="card-actions justify-end">
+            <button className="btn btn-primary">Buy Now</button>
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  );
+};
+
+export default News;
