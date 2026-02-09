@@ -1,36 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Wrapper from "../components/Wrapper";
+import { axiosApi } from "../config/axios";
+import { useNewsContext } from "../context/NewsContext";
 
 const News = () => {
-  return <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-    <NewsCard />
-    <NewsCard />
-    <NewsCard />
-    <NewsCard />
-    <NewsCard />
-    <NewsCard />
-    <NewsCard />
-  </div>;
+     
+  const { fetchNews, news, setNews } = useNewsContext();
+
+  
+      useEffect(() => {
+        fetchNews();
+      },[]);
+
+  return (
+    <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+      {news.map((articale, index)=>{
+         return (
+          <NewsCard key={index} details={articale}/>
+         )
+      })}
+    </div>
+  );
 };
 
-const NewsCard = () => {
+const NewsCard = ({ details }) => {
   return (
     <Wrapper>
       <div className="card bg-base-200 w-96 shadow-sm">
         <figure>
           <img
-            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-            alt="Shoes"
+            src={details?.urlToImage}
+            alt={details?.title}
           />
         </figure>
         <div className="card-body">
-          <h2 className="card-title">Card Title</h2>
-          <p>
-            A card component has a figure, a body part, and inside body there
-            are title and actions parts
+          <h2 className="card-title">{details?.title}</h2>
+          <p className="line-clamp-3">
+            {details?.description}
           </p>
           <div className="card-actions justify-end">
-            <button className="btn btn-primary">Buy Now</button>
+            <button className="btn btn-primary" onClick={()=>window.open(details?.url)}>Read More</button>
           </div>
         </div>
       </div>
