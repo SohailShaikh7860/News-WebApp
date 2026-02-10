@@ -14,8 +14,11 @@ const News = () => {
 
   return (
     <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-      {news.map((articale, index)=>{
-         return (
+      {news?.map((articale, index)=>{
+        if(articale?.urlToImage === null || articale?.description === null){
+         return null;
+        }
+        return (
           <NewsCard key={index} details={articale}/>
          )
       })}
@@ -29,6 +32,7 @@ const NewsCard = ({ details }) => {
       <div className="card bg-base-200 w-96 shadow-sm">
         <figure>
           <img
+          className="aspect-video object-cover w-full"
             src={details?.urlToImage}
             alt={details?.title}
           />
