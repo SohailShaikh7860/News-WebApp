@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-const Wrapper = ({children}) => {
+const Wrapper = ({ children, className = '' }) => {
   return (
-    <div className='max-w-280 m-auto'>
-       {children}
+    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
+      {children}
     </div>
-  )
-}
+  );
+};
 
-export default Wrapper
+export default Wrapper;

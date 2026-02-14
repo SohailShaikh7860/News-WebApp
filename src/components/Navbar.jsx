@@ -1,48 +1,88 @@
-import React, {useEffect, useState, useRef} from 'react'
-import Wrapper from './Wrapper.jsx'
+import React, { useEffect, useState, useRef } from 'react';
+import Wrapper from './Wrapper.jsx';
 import { useNewsContext } from '../context/NewsContext';
 
 const Navbar = () => {
-
   const [searchValue, setSearchValue] = useState('');
-  const { fetchNews, setNews } = useNewsContext();
-
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { fetchNews } = useNewsContext();
   const timer = useRef(null);
+  const searchRef = useRef(null);
 
-  useEffect( ()=>{
-    async function fetchData(){
-    if(!searchValue) return;
-       await fetchNews(`/everything?q=${searchValue}`);
+  useEffect(() => {
+    async function fetchData() {
+      if (!searchValue) return;
+      await fetchNews(`/everything?q=${searchValue}`);
     }
     clearTimeout(timer.current);
-    timer.current = setTimeout(()=>{
+    timer.current = setTimeout(() => {
       fetchData();
-    },1000)
+    }, 1000);
 
     return () => clearTimeout(timer.current);
-  },[searchValue])
+  }, [searchValue]);
+
+  useEffect(() => {
+    if (isSearchOpen && searchRef.current) {
+      searchRef.current.focus();
+    }
+  }, [isSearchOpen]);
 
   return (
-    <div className='bg-base-200'>
-    <Wrapper>
-    <div className="navbar shadow-sm">
-  <div className="flex-1">
-    <a className="btn btn-ghost text-xl">News-Web</a>
-  </div>
-  <div className="flex gap-2">
-    <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" onChange={(e)=>{setSearchValue(e.target.value)}} value={searchValue}/>
+    <nav className="glass-nav sticky top-0 z-50">
+      <Wrapper>
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+            </div>
+            <h1 className="text-xl font-bold gradient-text tracking-tight">
+              NewsHub
+            </h1>
+          </div>
 
-    <button className="btn btn-ghost btn-circle">
-      <div className="indicator">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /> </svg>
-        <span className="badge badge-xs badge-primary indicator-item"></span>
-      </div>
-    </button>
-  </div>
-</div>
-    </Wrapper>
-    </div>
-  )
-}
+          {/* Search */}
+          <div className="flex items-center gap-3">
+            <div className={`relative transition-all duration-300 ease-out ${isSearchOpen ? 'w-64 sm:w-80' : 'w-0'} overflow-hidden`}>
+              <input
+                ref={searchRef}
+                type="text"
+                placeholder="Search for news..."
+                className="w-full h-10 pl-10 pr-4 rounded-xl border border-slate-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                onChange={(e) => setSearchValue(e.target.value)}
+                value={searchValue}
+                onBlur={() => {
+                  if (!searchValue) setIsSearchOpen(false);
+                }}
+              />
+              <svg xmlns="http://www.w3.org/2000/svg" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
 
-export default Navbar
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
+              aria-label="Toggle search"
+            >
+              {isSearchOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+      </Wrapper>
+    </nav>
+  );
+};
+
+export default Navbar;
